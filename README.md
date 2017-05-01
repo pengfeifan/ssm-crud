@@ -13,15 +13,3 @@
 
 --------
 
-<br/>
-maven 本地配置选用阿里云的镜像<br/>
-```xml
-  <mirrors>
-	 <mirror>
-      <id>nexus-aliyun</id>
-      <mirrorOf>central</mirrorOf>
-      <name>aliyun Nexus</name>
-      <url>http://maven.aliyun.com/nexus/content/groups/public/</url>
-    </mirror>
-  </mirrors>
-```
