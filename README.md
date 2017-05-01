@@ -14,7 +14,7 @@
 --------
 
 <br/>
-maven 本地配置选用阿里云的镜像
+maven 本地配置选用阿里云的镜像<br/>
 ```xml
   <mirrors>
 	 <mirror>
