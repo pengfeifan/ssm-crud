@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.github.crud.dao.EmployeeModelMapper">
+	<resultMap id="BaseResultMap" type="com.github.crud.bean.EmployeeModel">
+		<id column="emp_id" jdbcType="INTEGER" property="empId" />
+		<result column="emp_name" jdbcType="VARCHAR" property="empName" />
+		<result column="gender" jdbcType="CHAR" property="gender" />
+		<result column="email" jdbcType="VARCHAR" property="email" />
+		<result column="deptment_id" jdbcType="INTEGER" property="deptmentId" />
+	</resultMap>
+
+	<resultMap id="WithDeptResultMap" type="com.github.crud.bean.EmployeeModel">
+		<id column="emp_id" jdbcType="INTEGER" property="empId" />
+		<result column="emp_name" jdbcType="VARCHAR" property="empName" />
+		<result column="gender" jdbcType="CHAR" property="gender" />
+		<result column="email" jdbcType="VARCHAR" property="email" />
+		<result column="deptment_id" jdbcType="INTEGER" property="deptmentId" />
+		<!-- 指定联合查询出的部门字段的封装 -->
+		<association property="department"
+			javaType="com.github.crud.bean.DepartmentModel">
+			<id column="dept_id" property="deptId" />
+			<result column="dept_name" property="deptName" />
+		</association>
+	</resultMap>
+	<sql id="Base_Column_List">
+		emp_id, emp_name, gender, email, deptment_id
+	</sql>
+	<sql id="WithDept_Column_List">
+		e.emp_id, e.emp_name, e.gender, e.email, e.deptment_id, d.dept_id, d.dept_name
+	</sql>
+
+	<!-- 查询员工同时带部门信息 -->
+	<select id="selectByPrimaryKeyWithDept" resultMap="WithDeptResultMap">
+		select
+		<include refid="WithDept_Column_List" />
+		from tb_emp e
+		left join tb_dept d on e.deptment_id = d.dept_id
+		where emp_id = #{empId,jdbcType=INTEGER}
+	</select>
+	<select id="selectAllWithDept" resultMap="WithDeptResultMap">
+		select distinct
+		<include refid="WithDept_Column_List" />
+		from tb_emp e
+		left join tb_dept d on e.deptment_id = d.dept_id
+	</select>
+
+	<!-- 查询员工不带部门信息的 -->
+	<select id="selectByPrimaryKey" parameterType="java.lang.Integer"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from tb_emp
+		where emp_id = #{empId,jdbcType=INTEGER}
+	</select>
+	<select id="countByEmpName" parameterType="java.lang.String"
+		resultType="java.lang.Integer">
+		select count(*)
+		from tb_emp
+		where emp_name = #{empName,jdbcType=VARCHAR}
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+		delete from tb_emp
+		where emp_id = #{empId,jdbcType=INTEGER}
+	</delete>
+	<insert id="insert" parameterType="com.github.crud.bean.EmployeeModel">
+		insert into tb_emp (emp_id, emp_name, gender,
+		email, deptment_id)
+		values (#{empId,jdbcType=INTEGER}, #{empName,jdbcType=VARCHAR},
+		#{gender,jdbcType=CHAR},
+		#{email,jdbcType=VARCHAR}, #{deptmentId,jdbcType=INTEGER})
+	</insert>
+	<insert id="insertSelective" parameterType="com.github.crud.bean.EmployeeModel">
+		insert into tb_emp
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="empId != null">
+				emp_id,
+			</if>
+			<if test="empName != null">
+				emp_name,
+			</if>
+			<if test="gender != null">
+				gender,
+			</if>
+			<if test="email != null">
+				email,
+			</if>
+			<if test="deptmentId != null">
+				deptment_id,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="empId != null">
+				#{empId,jdbcType=INTEGER},
+			</if>
+			<if test="empName != null">
+				#{empName,jdbcType=VARCHAR},
+			</if>
+			<if test="gender != null">
+				#{gender,jdbcType=CHAR},
+			</if>
+			<if test="email != null">
+				#{email,jdbcType=VARCHAR},
+			</if>
+			<if test="deptmentId != null">
+				#{deptmentId,jdbcType=INTEGER},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.github.crud.bean.EmployeeModel">
+		update tb_emp
+		<set>
+			<if test="empName != null">
+				emp_name = #{empName,jdbcType=VARCHAR},
+			</if>
+			<if test="gender != null">
+				gender = #{gender,jdbcType=CHAR},
+			</if>
+			<if test="email != null">
+				email = #{email,jdbcType=VARCHAR},
+			</if>
+			<if test="deptmentId != null">
+				deptment_id = #{deptmentId,jdbcType=INTEGER},
+			</if>
+		</set>
+		where emp_id = #{empId,jdbcType=INTEGER}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="com.github.crud.bean.EmployeeModel">
+		update tb_emp
+		set emp_name = #{empName,jdbcType=VARCHAR},
+		gender = #{gender,jdbcType=CHAR},
+		email = #{email,jdbcType=VARCHAR},
+		deptment_id = #{deptmentId,jdbcType=INTEGER}
+		where emp_id = #{empId,jdbcType=INTEGER}
+	</update>
+	<delete id="batchDelEmps" parameterType="java.lang.Integer">
+		delete from tb_emp
+		where emp_id in
+		<foreach item="empIdItem" collection="list" open="(" separator="," close=")">
+			#{empIdItem}
+		</foreach>
+	</delete>
+</mapper>
