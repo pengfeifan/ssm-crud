@@ -1,6 +1,6 @@
 # ssm-crud
-====
-spring+springmvc+mybatis整合 增删改查<br/>
+
+####spring+springmvc+mybatis整合 增删改查<br/>
 
 * Maven
 * BootStrap
@@ -11,9 +11,11 @@ spring+springmvc+mybatis整合 增删改查<br/>
 * Mysql
 * Tomcat
 
-======
+--------
+
+<br/>
 maven 本地配置选用阿里云的镜像
-···xml
+```xml
   <mirrors>
 	 <mirror>
       <id>nexus-aliyun</id>
@@ -22,4 +24,4 @@ maven 本地配置选用阿里云的镜像
       <url>http://maven.aliyun.com/nexus/content/groups/public/</url>
     </mirror>
   </mirrors>
-
+```
